@@ -1,0 +1,96 @@
+using System;
+using System.Collections.Generic;
+
+namespace UlarDanTangga
+{
+    class Program
+    {
+        static Random random = new Random();
+        static Dictionary<int, int> ular = new Dictionary<int, int>
+        {
+            { 16, 6 },
+            { 47, 26 },
+            { 49, 11 },
+            { 56, 53 },
+            { 62, 19 },
+            { 64, 60 },
+            { 87, 24 },
+            { 93, 73 },
+            { 95, 75 },
+            { 98, 78 }
+        };
+        static Dictionary<int, int> tangga = new Dictionary<int, int>
+        {
+            { 1, 38 },
+            { 4, 14 },
+            { 9, 31 },
+            { 21, 42 },
+            { 28, 84 },
+            { 36, 44 },
+            { 51, 67 },
+            { 71, 91 },
+            { 80, 100 }
+        };
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Selamat datang di game ular tangga!");
+            Console.Write("masukan jumlah pemain (2-4): ");
+            int playerCount = int.Parse(Console.ReadLine());
+
+            if (playerCount < 2 || playerCount > 4)
+            {
+                Console.WriteLine("jumlah pemain ga jelas. restart game nya.");
+                return;
+            }
+
+            int[] positions = new int[playerCount];
+            bool gameWon = false;
+
+            while (!gameWon)
+            {
+                for (int i = 0; i < playerCount; i++)
+                {
+                    Console.WriteLine($"\nSekarang giliran pemain {i + 1} . tekan enter untuk memutar dadu.");
+                    Console.ReadLine();
+                    int roll = RollDice();
+                    Console.WriteLine($"Pemain {i + 1} dapat angka {roll}");
+
+                    positions[i] += roll;
+
+                    if (positions[i] > 100)
+                    {
+                        positions[i] = 100;
+                    }
+
+                    if (ular.ContainsKey(positions[i]))
+                    {
+                        Console.WriteLine($"Ugh, pemain {i + 1} menginjak ular. turun ke posisi {ular[positions[i]]}");
+                        positions[i] = ular[positions[i]];
+                    }
+                    else if (tangga.ContainsKey(positions[i]))
+                    {
+                        Console.WriteLine($"Super! pemain {i + 1} dapat tangga. sekarang naik ke {tangga[positions[i]]}");
+                        positions[i] = tangga[positions[i]];
+                    }
+
+                    Console.WriteLine($"pemain {i + 1} sekarang di posisi {positions[i]}");
+
+                    if (positions[i] == 100)
+                    {
+                        Console.WriteLine($"\nPlayer {i + 1} wins the game!");
+                        gameWon = true;
+                        break;
+                    }
+                }
+            }
+
+            Console.WriteLine("Game over. terima kasih telah bermain!");
+        }
+
+        static int RollDice()
+        {
+            return random.Next(1, 7);
+        }
+    }
+}
